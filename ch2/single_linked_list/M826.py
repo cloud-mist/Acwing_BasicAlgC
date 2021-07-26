@@ -30,16 +30,18 @@ head,idx=-1,0
 while n:
     n-=1
 
-    op=list(input().split())
-    if op[0]=='H':
-        add_to_head(int(op[1]))
-    elif op[0]=='I':
-        add(int(op[1])-1, int(op[2]))
+    op,*s=input().split()
+    s=list(map(int, s))
+     
+    if op=='H':
+        add_to_head(s[0])
+    elif op=='I':
+        add(s[0]-1, s[1])
     else:
         if op[1]=='0':
             head = ne[head]
         else:
-            remove(int(op[1])-1)
+            remove(s[0]-1)
 
 # output：从head开始到-1结束,变化是下一个位置值
 i=head
