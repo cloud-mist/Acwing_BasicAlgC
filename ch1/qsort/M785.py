@@ -19,8 +19,6 @@ def qsort(l,r,s):
         if i <j: # 这个条件不成立的话，就不需要交换了。
             s[i],s[j] = s[j],s[i]
 
-    qsort(l, j, s)
-    qsort(j+1, r, s)
             
 n = int(input())
 s = list(map(int, input().split()))
