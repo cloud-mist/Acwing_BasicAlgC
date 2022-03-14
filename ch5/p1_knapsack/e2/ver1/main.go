@@ -1,3 +1,4 @@
+// 基础版
 package main
 
 import (
@@ -7,36 +8,49 @@ import (
 	"strconv"
 )
 
+const N = 1010
+
+var (
+	v, w [N]int
+	f    [N][N]int
+)
+
 func main() {
 	defer ot.Flush()
-	n := rnI()
-
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
+	// input
+	n, m := rnI(), rnI()
+	for i := 1; i <= n; i++ {
+		v[i], w[i] = rnI(), rnI()
 	}
 
-}
-
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
+	// calc
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= m; j++ {
+			f[i][j] = f[i-1][j]
+			// 下面的情况不一定存在,所以需要判断一下，以保证存在
+			if j >= v[i] {
+				f[i][j] = max(f[i][j], f[i][j-v[i]]+w[i])
 			}
-			fmt.Printf("%d %d\n", i, s)
 		}
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
-	}
+
+	// output
+	fmt.Print(f[n][m])
 }
 
-//{{{
-/* ============================PART 1: I/O ================================== */
+/* ======================================================================== */
+//
+//
+//
+//							 _____   _   _   ____
+//							| ____| | \ | | |  _ \
+//							|  _|   |  \| | | | | |
+//							| |___  | |\  | | |_| |
+//							|_____| |_| \_| |____/
+//
+//
+//
+/* ============================PART1: I/O ================================== */
 
 var (
 	ot = bufio.NewWriterSize(os.Stdout, int(1e6))
@@ -84,5 +98,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

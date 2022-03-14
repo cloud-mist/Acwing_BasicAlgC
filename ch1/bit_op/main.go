@@ -9,33 +9,37 @@ import (
 
 func main() {
 	defer ot.Flush()
+
 	n := rnI()
+	a := rsI(0, n)
 
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
-	}
-
-}
-
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
-			}
-			fmt.Printf("%d %d\n", i, s)
+	for _, v := range a {
+		ans := 0
+		for v != 0 {
+			v -= lowbit(v)
+			ans++
 		}
+		fmt.Fprintf(ot, "%d ", ans)
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
-	}
+
 }
 
-//{{{
+func lowbit(x int) int {
+	return x & (-x)
+}
+
+/* ======================================================================== */
+//
+//
+//
+//						 _____   _   _   ____
+//						| ____| | \ | | |  _ \
+//						|  _|   |  \| | | | | |
+//						| |___  | |\  | | |_| |
+//						|_____| |_| \_| |____/
+//
+//
+//
 /* ============================PART 1: I/O ================================== */
 
 var (
@@ -84,5 +88,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

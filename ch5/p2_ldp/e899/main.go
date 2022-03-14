@@ -7,35 +7,69 @@ import (
 	"strconv"
 )
 
+const N = 1010
+
 func main() {
 	defer ot.Flush()
-	n := rnI()
 
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
+	n, m := rnI(), rnI()
+	s := make([]string, n)
+	for i := 0; i < n; i++ {
+		s[i] = " " + rnS()
+	}
+
+	for ; m != 0; m-- {
+		a, limit := " "+rnS(), rnI()
+		res := 0
+
+		for i := 0; i < n; i++ {
+			if calc(a, s[i]) <= limit {
+				res++
+			}
+		}
+
+		fmt.Fprintln(ot, res)
 	}
 
 }
+func calc(a, b string) int {
+	n, m := len(a)-1, len(b)-1
+	var f [N][N]int
 
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
+	for i := 0; i <= n; i++ {
+		f[i][0] = i
+	}
+	for i := 0; i <= m; i++ {
+		f[0][i] = i
+	}
+
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= m; j++ {
+			f[i][j] = min(f[i-1][j]+1, f[i][j-1]+1)
+
+			t := f[i-1][j-1]
+			if a[i] != b[j] {
+				t++
 			}
-			fmt.Printf("%d %d\n", i, s)
+			f[i][j] = min(f[i][j], t)
 		}
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
-	}
+
+	return f[n][m]
 }
 
-//{{{
+/* ======================================================================== */
+//
+//
+//
+//							 _____   _   _   ____
+//							| ____| | \ | | |  _ \
+//							|  _|   |  \| | | | | |
+//							| |___  | |\  | | |_| |
+//							|_____| |_| \_| |____/
+//
+//
+//
 /* ============================PART 1: I/O ================================== */
 
 var (
@@ -84,5 +118,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

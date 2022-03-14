@@ -1,4 +1,3 @@
-// erato筛法 NloglogN
 package main
 
 import (
@@ -10,16 +9,37 @@ import (
 const N = 1000100
 
 var (
-	n    int
-	sign [N]bool
+	n, cnt int
+	sign   [N]bool
+	num    [N]int
 )
 
 func main() {
 	in := bufio.NewReader(os.Stdin)
 	fmt.Fscan(in, &n)
-	primes(n)
+	primesPro(n)
+	fmt.Println(cnt)
 }
 
+func primesPro(n int) {
+	for i := 2; i <= n; i++ {
+		if !sign[i] { // 如果没有被标记，说明是素数
+			num[cnt] = i
+			cnt++
+		}
+
+		for j := 0; num[j] <= n/i; j++ { // 枚举质数
+			sign[num[j]*i] = true // 把质数和i的乘积筛掉
+
+			if i%num[j] == 0 { //
+				break
+			}
+		}
+	}
+
+}
+
+// erato筛法 NloglogN
 func primes(n int) {
 	k := 0 // 记录个数
 	for i := 2; i <= n; i++ {

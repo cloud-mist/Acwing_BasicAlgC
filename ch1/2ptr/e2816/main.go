@@ -3,29 +3,31 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 )
 
-const N = 1010
-
-var f [N][N]int
-
 func main() {
 	defer ot.Flush()
-	n, m := rnI(), rnI()
-	a, b := " "+rnS(), " "+rnS()
 
-	for i := 1; i <= n; i++ {
-		for j := 1; j <= m; j++ {
-			f[i][j] = max(f[i-1][j], f[i][j-1])
-			if a[i] == b[j] {
-				f[i][j] = max(f[i][j], f[i-1][j-1]+1)
-			}
+	n, m := rnI(), rnI()
+	a, b := rsI(n), rsI(m)
+
+	var i, j int
+	for i < n && j < m {
+		if a[i] == b[j] {
+			i++
 		}
+		j++
 	}
 
-	fmt.Print(f[n][m])
+	if i != n {
+		fmt.Print("No")
+	} else {
+		fmt.Print("Yes")
+	}
+
 }
 
 /* ======================================================================== */
@@ -42,20 +44,48 @@ func main() {
 //
 /* ============================PART1: I/O ================================== */
 
+/* ==== G0 ===== */
+const BUFSIZE = int(1e6)
+
 var (
-	ot = bufio.NewWriterSize(os.Stdout, int(1e6))
-	in = bufio.NewScanner(os.Stdin)
+	ot = bufio.NewWriterSize(os.Stdout, BUFSIZE)
+	in = newScanner(os.Stdin)
 )
 
-func init()        { in.Split(bufio.ScanWords); in.Buffer(make([]byte, 4096), int(1e9)) }
-func rnS() string  { in.Scan(); return in.Text() }
+type scanner struct{ sc *bufio.Scanner }
+
+func newScanner(input io.Reader) *scanner {
+	sc := bufio.NewScanner(input)
+	sc.Split(bufio.ScanWords)
+	sc.Buffer(make([]byte, 1024), int(1e9))
+	return &scanner{sc}
+}
+
+/* ==== G1 ===== */
+func rnS() string  { in.sc.Scan(); return in.sc.Text() }
 func rnI() int     { i, _ := strconv.Atoi(rnS()); return i }
 func rnF() float64 { f, _ := strconv.ParseFloat(rnS(), 64); return f }
 
-func rsI(l, r int) []int {
-	t := make([]int, r)
-	for i := l; i < r; i++ {
+/* ==== G2 ===== */
+func rsI(n int) []int {
+	t := make([]int, n)
+	for i := 0; i < n; i++ {
 		t[i] = rnI()
+	}
+	return t
+}
+
+func rsF(n int) []float64 {
+	t := make([]float64, n)
+	for i := 0; i < n; i++ {
+		t[i] = rnF()
+	}
+	return t
+}
+func rsS(n int) []string {
+	t := make([]string, n)
+	for i := 0; i < n; i++ {
+		t[i] = rnS()
 	}
 	return t
 }

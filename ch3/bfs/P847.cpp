@@ -1,14 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 const int N = 100010;
-int h[N], e[N], ne[N], idx;
-int d[N], q[N];  // q是队列，d是距离
-int n, m;
+int       h[N], e[N], ne[N], idx;
+int       d[N], q[N];  // q是队列，d是距离
+int       n, m;
 
 void add(int a, int b) {
-    e[idx] = b;
+    e[idx]  = b;
     ne[idx] = h[a];
-    h[a] = idx++;
+    h[a]    = idx++;
 }
 
 int bfs() {
@@ -23,7 +23,7 @@ int bfs() {
         for (int i = h[t]; i != -1; i = ne[i]) {
             int j = e[i];
             if (d[j] == -1) {
-                d[j] = d[t] + 1;
+                d[j]    = d[t] + 1;
                 q[++tt] = j;
             }
         }

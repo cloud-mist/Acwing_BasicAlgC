@@ -4,42 +4,92 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-)
-
-const N = 1010
-
-var (
-	a, f [N]int
-	n    int
+	"strconv"
 )
 
 func main() {
-	r := bufio.NewReader(os.Stdin)
-	fmt.Fscan(r, &n)
+	defer ot.Flush()
+	n := rnI()
+	a := rsI(1, n+1)
+	f := make([]int, n+10)
 
+	len := 0
 	for i := 1; i <= n; i++ {
-		fmt.Fscan(r, &a[i])
-	}
-
-	for i := 1; i <= n; i++ {
-		f[i] = 1 // 只有i一个数
-		for j := 1; j <= i; j++ {
-			if a[j] < a[i] {
-				f[i] = max(f[i], f[j]+1)
+		l, r := 0, len
+		for l < r {
+			mid := (l + r + 1) >> 1
+			if f[mid] < a[i] {
+				l = mid
+			} else {
+				r = mid - 1
 			}
 		}
+
+		len = max(len, r+1)
+		f[r+1] = a[i]
 	}
 
-	res := 0
-	for i := 1; i <= n; i++ {
-		res = max(res, f[i])
-	}
-	fmt.Print(res)
+	fmt.Print(len)
+
 }
 
+/* ======================================================================== */
+//
+//
+//
+//							 _____   _   _   ____
+//							| ____| | \ | | |  _ \
+//							|  _|   |  \| | | | | |
+//							| |___  | |\  | | |_| |
+//							|_____| |_| \_| |____/
+//
+//
+//
+/* ============================PART 1: I/O ================================== */
+
+var (
+	ot = bufio.NewWriterSize(os.Stdout, int(1e6))
+	in = bufio.NewScanner(os.Stdin)
+)
+
+func init()        { in.Split(bufio.ScanWords); in.Buffer(make([]byte, 4096), int(1e9)) }
+func rnS() string  { in.Scan(); return in.Text() }
+func rnI() int     { i, _ := strconv.Atoi(rnS()); return i }
+func rnF() float64 { f, _ := strconv.ParseFloat(rnS(), 64); return f }
+
+func rsI(l, r int) []int {
+	t := make([]int, r)
+	for i := l; i < r; i++ {
+		t[i] = rnI()
+	}
+	return t
+}
+
+/* ===========================PART 2: Math Func ============================  */
 func max(x, y int) int {
 	if x > y {
 		return x
 	}
 	return y
+}
+func abs(x int) int {
+	if x > 0 {
+		return x
+	}
+	return -x
+}
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+func memset(a []int, v int) {
+	if len(a) == 0 {
+		return
+	}
+	a[0] = v
+	for bp := 1; bp < len(a); bp *= 2 {
+		copy(a[bp:], a[:bp])
+	}
 }

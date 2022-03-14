@@ -1,3 +1,4 @@
+// 分组背包
 package main
 
 import (
@@ -7,35 +8,47 @@ import (
 	"strconv"
 )
 
+const N = 110
+
+var (
+	v, w, f [N]int
+)
+
 func main() {
 	defer ot.Flush()
-	n := rnI()
 
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
-	}
+	n, m := rnI(), rnI()
+	for i := 1; i <= n; i++ {
+		s := rnI()
+		for j := 1; j <= s; j++ {
+			v[j], w[j] = rnI(), rnI()
+		}
 
-}
-
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
+		// 和01背包不同的地方是，选这组的每一个，取最大值
+		for j := m; j >= 0; j-- { //
+			for k := 1; k <= s; k++ {
+				if j >= v[k] {
+					f[j] = max(f[j], f[j-v[k]]+w[k])
+				}
 			}
-			fmt.Printf("%d %d\n", i, s)
 		}
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
-	}
+
+	fmt.Print(f[m])
 }
 
-//{{{
+/* ======================================================================== */
+//
+//
+//
+//							 _____   _   _   ____
+//							| ____| | \ | | |  _ \
+//							|  _|   |  \| | | | | |
+//							| |___  | |\  | | |_| |
+//							|_____| |_| \_| |____/
+//
+//
+//
 /* ============================PART 1: I/O ================================== */
 
 var (
@@ -84,5 +97,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

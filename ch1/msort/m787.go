@@ -10,32 +10,66 @@ import (
 func main() {
 	defer ot.Flush()
 	n := rnI()
+	a := rsI(0, n)
 
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
+	mergeSort(a, 0, n-1)
+
+	for i := range a {
+		fmt.Fprintf(ot, "%d ", a[i])
 	}
 
 }
 
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
-			}
-			fmt.Printf("%d %d\n", i, s)
+func mergeSort(a []int, l, r int) {
+	if l >= r {
+		return
+	}
+
+	// 递归
+	mid := (l + r) >> 1
+	mergeSort(a, l, mid)
+	mergeSort(a, mid+1, r)
+
+	// 合并
+	i, j := l, mid+1
+	tmp := make([]int, 0)
+	for i <= mid && j <= r {
+		if a[i] <= a[j] {
+			tmp = append(tmp, a[i])
+			i++
+		} else {
+			tmp = append(tmp, a[j])
+			j++
 		}
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
+
+	// 如果有剩余,吧剩余合并
+	for ; i <= mid; i++ {
+		tmp = append(tmp, a[i])
 	}
+	for ; j <= r; j++ {
+		tmp = append(tmp, a[j])
+	}
+
+	// 将东西赋值给源数组
+	for i, j := l, 0; i <= r; i, j = i+1, j+1 {
+		a[i] = tmp[j]
+	}
+
 }
 
-//{{{
+/* ======================================================================== */
+//
+//
+//
+//				 _____   _   _   ____
+//				| ____| | \ | | |  _ \
+//				|  _|   |  \| | | | | |
+//				| |___  | |\  | | |_| |
+//				|_____| |_| \_| |____/
+//
+//
+//
 /* ============================PART 1: I/O ================================== */
 
 var (
@@ -84,5 +118,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

@@ -1,3 +1,4 @@
+// 优化成1维
 package main
 
 import (
@@ -7,36 +8,42 @@ import (
 	"strconv"
 )
 
+const N = 1010
+
+var v, w, f [N]int
+
 func main() {
 	defer ot.Flush()
-	n := rnI()
-
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
+	// input
+	n, m := rnI(), rnI()
+	for i := 1; i <= n; i++ {
+		v[i], w[i] = rnI(), rnI()
 	}
 
-}
-
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
-			}
-			fmt.Printf("%d %d\n", i, s)
+	for i := 1; i <= n; i++ {
+		for j := v[i]; j <= m; j++ {
+			// 本来就是用的当前层的值，所以不需要像01背包那样要倒序遍历
+			f[j] = max(f[j], f[j-v[i]]+w[i])
 		}
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
-	}
+
+	// output
+	fmt.Print(f[m])
 }
 
-//{{{
-/* ============================PART 1: I/O ================================== */
+/* ======================================================================== */
+//
+//
+//
+//							 _____   _   _   ____
+//							| ____| | \ | | |  _ \
+//							|  _|   |  \| | | | | |
+//							| |___  | |\  | | |_| |
+//							|_____| |_| \_| |____/
+//
+//
+//
+/* ============================PART1: I/O ================================== */
 
 var (
 	ot = bufio.NewWriterSize(os.Stdout, int(1e6))
@@ -84,5 +91,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

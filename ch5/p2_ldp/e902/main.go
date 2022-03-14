@@ -7,35 +7,54 @@ import (
 	"strconv"
 )
 
+const N = 1010
+
+var f [N][N]int
+
 func main() {
 	defer ot.Flush()
-	n := rnI()
 
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
+	// input
+	n, a := rnI(), " "+rnS()
+	m, b := rnI(), " "+rnS()
+
+	// init
+	for i := 0; i <= m; i++ {
+		//A的前0个匹配b的前i个，有多少个，a要增加多少个
+		f[0][i] = i
+	}
+	for i := 0; i <= n; i++ {
+		//A的前i个匹配b的前0个，a有多少个，要删除多少个
+		f[i][0] = i
 	}
 
-}
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= m; j++ {
+			f[i][j] = min(f[i-1][j]+1, f[i][j-1]+1)
 
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
+			tmp := f[i-1][j-1]
+			if a[i] != b[j] {
+				tmp++
 			}
-			fmt.Printf("%d %d\n", i, s)
+			f[i][j] = min(f[i][j], tmp)
 		}
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
-	}
+
+	fmt.Print(f[n][m])
 }
 
-//{{{
+/* ======================================================================== */
+//
+//
+//
+//							 _____   _   _   ____
+//							| ____| | \ | | |  _ \
+//							|  _|   |  \| | | | | |
+//							| |___  | |\  | | |_| |
+//							|_____| |_| \_| |____/
+//
+//
+//
 /* ============================PART 1: I/O ================================== */
 
 var (
@@ -84,5 +103,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

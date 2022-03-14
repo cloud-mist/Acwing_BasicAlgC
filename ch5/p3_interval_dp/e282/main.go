@@ -1,3 +1,4 @@
+// 石子合并
 package main
 
 import (
@@ -7,35 +8,56 @@ import (
 	"strconv"
 )
 
+const (
+	N   = 310
+	INF = int(1e8)
+)
+
+var (
+	f [N][N]int
+	a [N]int
+)
+
 func main() {
 	defer ot.Flush()
+
+	// input & 初始化f & 前缀和
 	n := rnI()
-
-	for ; n != 0; n-- {
-		x := rnI()
-		divide(x)
-		fmt.Println()
-	}
-
-}
-
-func divide(n int) {
-	for i := 2; i <= n/i; i++ {
-		if n%i == 0 {
-			s := 0
-			for n%i == 0 {
-				n /= i
-				s++
-			}
-			fmt.Printf("%d %d\n", i, s)
+	for i := 0; i < N; i++ {
+		for j := 0; j < N; j++ {
+			f[i][j] = INF
 		}
 	}
-	if n > 1 {
-		fmt.Printf("%d %d\n", n, 1)
+	for i := 1; i <= n; i++ {
+		f[i][i] = 0
+		a[i] = rnI()
+		a[i] += a[i-1]
 	}
+
+	for len := 2; len <= n; len++ { // 阶段
+		for l := 1; l <= n-len+1; l++ { //状态：左端点
+			r := l + len - 1
+			for k := l; k < r; k++ { // 决策
+				f[l][r] = min(f[l][r], f[l][k]+f[k+1][r]+a[r]-a[l-1])
+			}
+		}
+	}
+
+	fmt.Print(f[1][n])
 }
 
-//{{{
+/* ======================================================================== */
+//
+//
+//
+//							 _____   _   _   ____
+//							| ____| | \ | | |  _ \
+//							|  _|   |  \| | | | | |
+//							| |___  | |\  | | |_| |
+//							|_____| |_| \_| |____/
+//
+//
+//
 /* ============================PART 1: I/O ================================== */
 
 var (
@@ -84,5 +106,3 @@ func memset(a []int, v int) {
 		copy(a[bp:], a[:bp])
 	}
 }
-
-//}}}

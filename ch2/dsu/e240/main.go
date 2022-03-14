@@ -7,25 +7,57 @@ import (
 	"strconv"
 )
 
-const N = 1010
+const N = 100010
 
-var f [N][N]int
+var (
+	p, d [N]int
+)
+
+func find(x int) int {
+	if p[x] != x {
+		t := find(p[x]) // 记住根的编号
+		d[x] += d[p[x]] // 计算距离
+		p[x] = t
+	}
+	return p[x]
+}
 
 func main() {
 	defer ot.Flush()
-	n, m := rnI(), rnI()
-	a, b := " "+rnS(), " "+rnS()
+	n, k := rnI(), rnI()
+	for i := 0; i < n; i++ {
+		p[i] = i
+	}
 
-	for i := 1; i <= n; i++ {
-		for j := 1; j <= m; j++ {
-			f[i][j] = max(f[i-1][j], f[i][j-1])
-			if a[i] == b[j] {
-				f[i][j] = max(f[i][j], f[i-1][j-1]+1)
+	res := 0
+	for ; k != 0; k-- {
+		dis, x, y := rnI(), rnI(), rnI()
+		if x > n || y > n {
+			// 超过了动物标号,直接假话
+			res++
+		} else {
+			px, py := find(x), find(y)
+			if dis == 1 {
+				if px == py && (d[x]-d[y])%3 != 0 {
+					// 如果是在同一集合，但余数不同的话，说明假话
+					res++
+				} else if px != py {
+					// 如果不同集合，就接上去，更新距离
+					p[px] = py
+					d[px] = d[y] - d[x]
+				}
+			} else {
+				if px == py && (d[x]-d[y]-1)%3 != 0 {
+					res++
+				} else if px != py {
+					p[px] = py
+					d[px] = d[y] - d[x] + 1
+				}
 			}
 		}
 	}
 
-	fmt.Print(f[n][m])
+	fmt.Print(res)
 }
 
 /* ======================================================================== */
@@ -40,7 +72,7 @@ func main() {
 //
 //
 //
-/* ============================PART1: I/O ================================== */
+/* ============================PART 1: I/O ================================== */
 
 var (
 	ot = bufio.NewWriterSize(os.Stdout, int(1e6))
